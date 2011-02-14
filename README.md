@@ -1,7 +1,7 @@
 Quick Site
 ==========
 
-** In Development **
+** ** In Development ** **
 
 Quick Site is a light-weight Sinatra app designed to make creating & deploying static websites a breeze.
 
