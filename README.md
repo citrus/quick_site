@@ -14,8 +14,13 @@ To use quick site:
     # boot with your method of choice
     
     ruby app.rb
-    shotgun -p 4567 $PWD/app.rb
     thin start -p 4567
+    unicorn
+    
+    # if you'd like to restart the app on each request (for development)
+    
+    shotgun -p 4567 $PWD/app.rb
+    
 
 
 Now open http://localhost:4567 in your favorite browser and start building sites!
