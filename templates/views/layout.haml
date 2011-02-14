@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %title= @site.title
+    = render :haml, :_metatags
+    = stylesheet "styles"
+
+  %body
+    #container
+      #header    
+        %h1= link_to @site.title, "/"
+        #nav
+          = render :haml, :_nav
+      #content
+        = yield
+        %br.clear
+    
+      #footer
+        = render :haml, :_footer

@@ -1,4 +1,56 @@
 body {
-  background-color: #ddd;
+  background-color: #eee;
   font-family: Georgia;
+}
+#container {
+  width: 980px;
+  margin: 0 auto;
+}
+#header {
+  border-bottom: 1px solid #fff;
+}
+#nav {
+  height: 27px;
+}
+#nav a {
+  display: block;
+  float: left;
+  padding: 4px 14px;
+  margin-right: 7px;
+  background-color: #fff;
+  color: #333;
+}
+#nav a:hover {
+  color: #d80000;
+}
+#footer {
+  font-size: 12px;
+  border-top: 1px solid #fff;
+}
+#footer p.left,
+#footer p.right {
+  display: block;
+  width: 45%;
+}
+#footer p.left {
+  float: left;
+}
+#footer p.right {
+  float: right;
+  text-align: right;
+}
+#footer p.right a {
+  margin-left: 5px;
+}
+
+a, a:link, a:visited {
+  color: #d80000;
+  text-decoration: none;
+}
+a:hover {
+  color: #e80000;
+  text-decoration: underline;
+}
+a:active {
+  color: #444;
 }

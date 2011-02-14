@@ -28,7 +28,7 @@ class Site
     
   end
     
-  attr_reader :name, :dir_name, :root, :path, :view_path, :public_path, :config_file, :config
+  attr_reader :name, :title, :dir_name, :root, :path, :view_path, :public_path, :config_file, :config
     
     
   # Creates a new Site instance
@@ -83,9 +83,9 @@ class Site
     File.open(@config_file, 'w') do |out|
       YAML.dump({
         "name"   => @name,
+        "root"   => @root,
         "domain" => "your-domain.com",
         "email"  => "your-email@your-domain.com"
-        #, "pages"  => ["home","about","contact"]
       }, out )
     end
     load_config
@@ -118,6 +118,7 @@ class Site
     #
     def setup!
       # setup variables based on name
+      @title       = @name.titleize
       @dir_name    = safe_filename(@name)
       @root        = File.join(settings.site_root, @dir_name)
       @path        = "/sites/#{@dir_name}"
@@ -135,10 +136,7 @@ class Site
     def build
       mkdir_p @view_path
       cp_r File.join(settings.template_root, "public"), @root
-      
-      copy_template("layout")
-      copy_template("index")
-      
+      cp_r File.join(settings.template_root, "views"), @root
       write_config
       self
     end 
@@ -148,5 +146,6 @@ class Site
     def copy_template(name, to=name)
       cp File.join(settings.template_root, "#{name}.haml"), File.join(@view_path, "#{to}.haml")
     end
+
    
 end

@@ -23,6 +23,7 @@ module Helpers
     
       def link_to(text, url, opts={})
         attributes = ""
+        url = File.join("/sites/#{@site.name}", url) if @site
         opts.each { |key, value| attributes << key.to_s << "=\"" << value << "\" "}
         "<a href=\"#{url}\" #{attributes}>#{text}</a>"
       end

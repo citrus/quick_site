@@ -2,10 +2,12 @@
 %html
   %head
     %title QuickSite
-    = stylesheet("styles")
+    = stylesheet "styles"
 
   %body
-    %h1 QuickSite
-    %hr
-    = flash_helper
-    = yield
+    #container
+      #header    
+        %h1= link_to "Quick Site", "/"
+      #content
+        = yield
+        %br.clear

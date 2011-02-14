@@ -17,14 +17,19 @@ Now boot with your method of choice:
     thin start -p 4567
     unicorn -p 4567
     
-If you'd like to restart the app on each request: (for development)
-    
-    shotgun -p 4567 $PWD/app.rb
-    
-
 
 Open [http://localhost:4567](http://localhost:4567) in your favorite browser and enter the name of your new site. After it's created, navigate to http://localhost:4567/sites/your_site/**your-new-page** to automatically create additional pages.
 
+
+
+** TO DO **
+Once you're happy with your site, visit http://localhost:4567/deploy/site_name to upload your changes to your server. 
+
+    
+
+If you'd like to restart the app on each request: (for development)
+    
+    shotgun -p 4567 $PWD/app.rb
 
 
 
@@ -42,9 +47,11 @@ Shouda tests can be run with:
 To Do
 -----
 
-* Add some real styles and views
+* Deploy code..
+* Improve styles and views
 * Nested pages don't get nested (/this/is/a/page becomes this_is_a_page.haml)
 * Add more fields to new site form
+* image_tag helper
 * Add Less/SCSS support
 * Switch to a more clever name?
 
