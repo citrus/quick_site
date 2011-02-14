@@ -27,8 +27,33 @@ class Site
     end
     
   end
-    
-  attr_reader :name, :title, :dir_name, :root, :path, :view_path, :public_path, :config_file, :config
+  
+  # The name of the site
+  attr_reader :name
+  
+  # Browser title
+  attr_reader :title
+  
+  # Name of the site's directory
+  attr_reader :dir_name
+  
+  # Full path to site including dir_name
+  attr_reader :root
+  
+  # Web path to the site (/sites/sample_site)
+  attr_reader :path
+  
+  # Path to the site's public directory
+  attr_reader :public_path
+  
+  # Path to the site's view directory
+  attr_reader :view_path
+  
+  # Path to the site's config file
+  attr_reader :config_file
+  
+  # YML parsed site config hash
+  attr_reader :config
     
     
   # Creates a new Site instance

@@ -54,11 +54,12 @@ class TestSite < Test::Unit::TestCase
     
     should "build all necessary parts" do
       @site.save
-      assert File.exists?(@expected_root + "/config.yml")
       assert Dir.exists?(@expected_root + "/public")
-      assert File.exists?(@expected_root + "/public/stylesheets/styles.css")
       assert Dir.exists?(@expected_root + "/views")
+      assert File.exists?(@expected_root + "/config.yml")
+      assert File.exists?(@expected_root + "/public/stylesheets/styles.css")
       assert File.exists?(@expected_root + "/views/index.haml")
+      assert File.exists?(@expected_root + "/views/layout.haml")
     end
     
   end
