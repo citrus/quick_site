@@ -22,21 +22,17 @@ module Actions
       haml :index
     end
     
-    get '/new' do
-      haml :new
-    end
+    #get '/new' do
+    #  haml :new
+    #end
     
     get '/sites/:name' do
-      @site = Site.find(params[:name])
-      set_public  @site.public_path
-      set :views, @site.view_path
+      site(params[:name])
       haml :index
     end
     
     get '/sites/:name/:page' do
-      @site = Site.find(params[:name])
-      set_public  @site.public_path
-      set :views,  @site.view_path
+      site(params[:name])
       haml @site.haml(params[:page])
     end
     
@@ -48,10 +44,11 @@ module Actions
       @site = Site.new(params[:name])
       if @site.save
         flash[:success] = "Site created!"
-        redirect '/'
+        redirect @site.path
       else
+        @sites = Site.all
         flash[:error] = "Site could not be saved"
-        haml :new
+        haml :index
       end
     end
   

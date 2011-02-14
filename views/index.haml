@@ -1,7 +1,16 @@
-%h2 Sites
-%h4 Site Root: #{settings.site_root}
-= link_to "New Site", "/new"
+%h2 New Site
 
-%ul.sites
-- @sites.each do |site|
-  %li= link_to site, "/sites/#{site}"
+%form{ :action => "/create", :method => "POST" }
+
+  %label{ :for => "name" } Name:
+  %input{ :type => "text", :name => "name", :value => params[:name] }
+  %input{ :type => "submit", :value => "Create" }
+
+
+- if @sites
+  %h2 Sites
+  %h4 Site Root: #{settings.site_root}
+  
+  %ul.sites
+  - @sites.each do |site|
+    %li= link_to site, "/sites/#{site}"

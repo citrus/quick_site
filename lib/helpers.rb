@@ -7,6 +7,13 @@ module Helpers
     FileUtils.ln_s dir, settings.public
   end
   
+  def site(name)
+    @site = Site.find(name)
+    return redirect "/" unless @site
+    set_public  @site.public_path
+    set :views, @site.view_path  
+  end
+  
   # ============================================
   # Helpers
   

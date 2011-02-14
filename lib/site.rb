@@ -24,7 +24,7 @@ class Site
     
   end
     
-  attr_reader :name, :dir_name, :root, :view_path, :public_path, :config_file, :config
+  attr_reader :name, :dir_name, :root, :path, :view_path, :public_path, :config_file, :config
     
     
   # Create a new Site instance
@@ -115,6 +115,7 @@ class Site
       # setup variables based on name
       @dir_name    = safe_filename(@name)
       @root        = File.join(settings.site_root, @dir_name)
+      @path        = "/sites/#{@dir_name}"
       @view_path   = @root + "/views"
       @public_path = @root + "/public"
       @config_file = @root + "/config.yml"
