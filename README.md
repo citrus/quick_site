@@ -43,7 +43,7 @@ To Do
 -----
 
 * Add some real styles and views
-* Nested pages can't be created
+* Nested pages don't get nested (/this/is/a/page becomes this_is_a_page.haml)
 * Add more fields to new site form
 * Add Less/SCSS support
 * Switch to a more clever name?
