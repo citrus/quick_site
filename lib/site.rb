@@ -9,12 +9,16 @@ class Site
   
     # Returns an array of sites (folders) in the site root folder.
     #
+    #   Site.all # ["test", "sample", ...]
+    #
     def all
       return [] unless Dir.exists?(settings.site_root)
       Dir.entries(settings.site_root).reject{|i| i.match(/^\./) != nil }
     end
     
     # Finds a site's root folder, then creates a new instance of Site and loads it's config. 
+    #
+    #   Site.find("test") # #<Site:0x00 @name="test"...
     #
     def find(name)
       site = Site.new(name)
@@ -27,7 +31,7 @@ class Site
   attr_reader :name, :dir_name, :root, :path, :view_path, :public_path, :config_file, :config
     
     
-  # Create a new Site instance
+  # Creates a new Site instance
   #
   def initialize(name)
     @name = name
@@ -54,7 +58,6 @@ class Site
   end
   
   
-    
   # Validates a site instance
   #
   def valid?
@@ -96,7 +99,8 @@ class Site
     @config = YAML::load_file(@config_file)
   end
   
-    
+  # Compares two sites based on their root folders
+  #
   def ==(other)
     @root == other.root
   end
@@ -104,7 +108,8 @@ class Site
   
   private
   
-  
+    # Converts the given name into a lowercase underscored filename
+    #
     def safe_filename(name)
       name.parameterize.gsub("-", "_")
     end
@@ -138,6 +143,8 @@ class Site
       self
     end 
     
+    # Copies a template from the template root to the site's view path 
+    #
     def copy_template(name, to=name)
       cp File.join(settings.template_root, "#{name}.haml"), File.join(@view_path, "#{to}.haml")
     end

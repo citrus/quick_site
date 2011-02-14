@@ -1,38 +1,33 @@
 module Actions
 
-
-  
   def self.included(mod)
-  
-      
+        
     # ============================================
     # Filters
     
     before do
-      set_public  settings.publik
-      set :views, settings.root + "/views"
+      matches = request.path.match(/\/sites\/([a-z0-9\_]+)/) || []
+      if 0 < matches.length
+        site(matches[1])
+      else
+        Settings.reset_paths
+      end
     end
+    
     
     # ============================================
     # GET
-    
     
     get '/' do
       @sites = Site.all
       haml :index
     end
     
-    #get '/new' do
-    #  haml :new
-    #end
-    
     get '/sites/:name' do
-      site(params[:name])
       haml :index
     end
     
     get '/sites/:name/:page' do
-      site(params[:name])
       haml @site.haml(params[:page])
     end
     

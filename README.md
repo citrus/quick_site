@@ -23,12 +23,8 @@ If you'd like to restart the app on each request: (for development)
     
 
 
-Now open http://localhost:4567 in your favorite browser and start building sites!
+Open [http://localhost:4567](http://localhost:4567) in your favorite browser and enter the name of your new site. After it's created, navigate to http://localhost:4567/sites/your_site/your-new-page to automatically create additional pages.
 
-Navigate to http://localhost:4567/sites/your_site/your-new-page to automatically create additional pages.
-
-
-Chameleon-like styles are currently achieved by symlinking from the site's root to the application's root. This is kind of ghetto and may change...
 
 
 
@@ -47,6 +43,7 @@ To Do
 -----
 
 * Add some real styles and views
+* Nested pages can't be created
 * Add more fields to new site form
 * Add Less/SCSS support
 * Switch to a more clever name?

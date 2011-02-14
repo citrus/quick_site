@@ -10,8 +10,8 @@ module Helpers
   def site(name)
     @site = Site.find(name)
     return redirect "/" unless @site
-    set_public  @site.public_path
-    set :views, @site.view_path  
+    Settings.set_paths(@site)
+    @site
   end
   
   # ============================================
