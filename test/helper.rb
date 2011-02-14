@@ -1,5 +1,6 @@
-puts "HELPER!"
+ENV["environment"] = "test"
 
 require 'test/unit'
 require 'shoulda'
-require_relative "lib/site"
+
+require_relative "../app"

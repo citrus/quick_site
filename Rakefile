@@ -11,6 +11,6 @@ require 'rake'
 require 'rake/testtask'
 
 Rake::TestTask.new(:test) do |t|
-  t.libs << 'test'
+  t.libs << 'test' << 'lib'
   t.verbose = true
 end
