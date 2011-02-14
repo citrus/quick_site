@@ -11,13 +11,13 @@ To use quick site:
     cd quick_site
     bundle install
     
-    # boot with your method of choice
+Now boot with your method of choice:
     
     ruby app.rb
     thin start -p 4567
-    unicorn
+    unicorn -p 4567
     
-    # if you'd like to restart the app on each request (for development)
+If you'd like to restart the app on each request: (for development)
     
     shotgun -p 4567 $PWD/app.rb
     

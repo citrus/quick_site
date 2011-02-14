@@ -7,10 +7,11 @@ gem 'haml'
 gem 'activesupport'
 gem 'i18n'
 
+# gem 'shotgun'
+# gem 'thin'
+# gem 'unicorn'
+# gem 'webrick'
 
-group :development, :test do
-
-  gem 'shotgun'
+group :test do
   gem 'shoulda'
-  
 end

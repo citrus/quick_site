@@ -7,8 +7,6 @@ GEM
     rack (1.2.1)
     rack-flash (0.1.1)
       rack
-    shotgun (0.8)
-      rack (>= 1.0)
     shoulda (2.11.3)
     sinatra (1.1.2)
       rack (~> 1.1)
@@ -24,6 +22,5 @@ DEPENDENCIES
   i18n
   rack
   rack-flash
-  shotgun
   shoulda
   sinatra
