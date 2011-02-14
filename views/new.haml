@@ -1,0 +1,7 @@
+%h2 New Site
+
+%form{ :action => "/create", :method => "POST" }
+
+  %input{ :type => "text", :name => "name", :value => params[:name] }
+  %input{ :type => "submit", :name => "Create" }
+  

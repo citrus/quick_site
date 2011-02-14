@@ -1,0 +1,11 @@
+!!!
+%html
+  %head
+    %title Hello Sinatra
+    %link{ :rel=>'stylesheet', :href=>'/stylesheets/style.css', :type => "text/css" }
+
+  %body
+    %h1 Quick Site
+    %hr
+    = flash_helper
+    = yield
