@@ -25,6 +25,10 @@ module Actions
       haml :index
     end
     
+    get '/sites' do
+      redirect '/'
+    end
+    
     get SITE_REGEX do |name, page|
       @page = 0 < page.length ? page : "index"
       haml @site.haml(@page)
