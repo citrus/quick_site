@@ -27,7 +27,7 @@ module Settings
   end
 
   # Retrieve a saved setting and throw and error if it doesn't exist.
-  #  
+  #
   #   Settings.foo # "bar"
   #   Settings.fuz # method missing error
   #
@@ -37,7 +37,7 @@ module Settings
   end
   
   # Resets the 'hot-swappable' paths to their defaults
-  #  
+  #
   #   Settings.reset_paths
   #
   def reset_paths
@@ -46,7 +46,7 @@ module Settings
   end
   
   # Sets the 'hot-swappable' paths to a site's paths.
-  #  
+  #
   #   Settings.set_paths(@site)
   #
   def set_paths(site)
