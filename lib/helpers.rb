@@ -1,7 +1,9 @@
 module Helpers
 
   def set_public(dir)
-    FileUtils.rm_r settings.public if File.exists?(settings.public)
+    return true if dir == settings.public
+    FileUtils.rm_r settings.public if File.symlink?(settings.public)
+    FileUtils.mv settings.public, settings.public + ".bak" if Dir.exists?(settings.public)
     FileUtils.ln_s dir, settings.public
   end
   
