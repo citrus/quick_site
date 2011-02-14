@@ -23,7 +23,7 @@ If you'd like to restart the app on each request: (for development)
     
 
 
-Open [http://localhost:4567](http://localhost:4567) in your favorite browser and enter the name of your new site. After it's created, navigate to http://localhost:4567/sites/your_site/*your-new-page* to automatically create additional pages.
+Open [http://localhost:4567](http://localhost:4567) in your favorite browser and enter the name of your new site. After it's created, navigate to http://localhost:4567/sites/your_site/**your-new-page** to automatically create additional pages.
 
 
 

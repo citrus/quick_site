@@ -1,12 +1,14 @@
 module Actions
 
+  SITE_REGEX = Regexp.new("/sites/([a-z0-9\_]+)/?(.*)")
+
   def self.included(mod)
         
     # ============================================
     # Filters
     
     before do
-      matches = request.path.match(/\/sites\/([a-z0-9\_]+)/) || []
+      matches = request.path.match(SITE_REGEX) || []
       if 0 < matches.length
         site(matches[1])
       else
@@ -23,12 +25,9 @@ module Actions
       haml :index
     end
     
-    get '/sites/:name' do
-      haml :index
-    end
-    
-    get '/sites/:name/:page' do
-      haml @site.haml(params[:page])
+    get SITE_REGEX do |name, page|
+      @page = 0 < page.length ? page : "index"
+      haml @site.haml(@page)
     end
     
     
