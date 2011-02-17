@@ -14,4 +14,5 @@ gem 'i18n'
 
 group :test do
   gem 'shoulda'
+  gem 'rack-test'
 end

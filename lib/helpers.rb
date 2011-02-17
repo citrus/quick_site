@@ -26,6 +26,17 @@ module Helpers
         "<a href=\"#{url}\" #{attributes}>#{text}</a>"
       end
       
+      # Easily add an image tag
+      #
+      #   = image_tag("src.png")
+      #
+      def image_tag(src, opts={})
+        attributes = ""
+        src = File.join("/sites/#{@site.name}", src) if @site
+        opts.each { |key, value| attributes << key.to_s << "=\"" << value << "\" "}
+        "<img src=\"#{src}\" #{attributes}/>"
+      end
+      
       
       # Displays flash messages if they exist.
       #

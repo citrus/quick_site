@@ -5,6 +5,8 @@ require 'bundler/setup'
 
 require 'fileutils'
 require 'rack-flash'
+
+require 'haml'
 require 'sinatra'
 
 require_relative "lib/settings"
@@ -20,8 +22,8 @@ Settings.set :root, File.expand_path("../", __FILE__)
 set :root,             Settings.root
 set :site_root,        Settings.root + "/sites"
 set :template_root,    Settings.root + "/templates"
-set :public,           Proc.new{ puts Settings.public_path; Settings.public_path }
-set :views,            Proc.new{ puts Settings.view_path; Settings.view_path }
+set :public,           Proc.new{ Settings.public_path }
+set :views,            Proc.new{ Settings.view_path }
 set :reload_templates, true
 
 include Helpers
