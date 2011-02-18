@@ -62,6 +62,12 @@ class TestSite < Test::Unit::TestCase
       assert File.exists?(@expected_root + "/views/layout.haml")
     end
     
+    should "create git repository" do
+      @site.save
+      assert Dir.exists?(@expected_root + "/.git")
+      assert File.exists?(@expected_root + "/.gitignore")
+    end
+    
   end
   
   context "an existing site" do

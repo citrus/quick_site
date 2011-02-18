@@ -97,7 +97,7 @@ class Site
   def haml(name)
     name = safe_filename(name)
     return name.to_sym if File.exists?(File.join(@view_path, "#{name}.haml"))
-    copy_template("page", name)
+    copy_haml("page", name)
     name.to_sym
   end
   
@@ -160,16 +160,38 @@ class Site
     #
     def build
       mkdir_p @view_path
-      cp_r File.join(settings.template_root, "public"), @root
-      cp_r File.join(settings.template_root, "views"), @root
+      copy_template("public")
+      copy_template("views")
       write_config
+      initialize_git if settings.use_git
       self
     end 
+
+
+    # Creates git repository in root directory and copies .gitignore template
+    #
+    def initialize_git
+      system("cd #{@root}; git init") unless Dir.exists?(@root + "/.git")
+      copy_template ".gitignore"
+      system("git add .; git commit -a -m 'Initial Commit'")
+    end
+    
     
     # Copies a template from the template root to the site's view path 
     #
-    def copy_template(name, to=name)
-      cp File.join(settings.template_root, "#{name}.haml"), File.join(@view_path, "#{to}.haml")
+    def copy_haml(name, to=name)
+      copy_template "#{name}.haml", "views/#{to}.haml"
+    end
+    
+    
+    # Copies a template from the template root to the site's view path 
+    #
+    def copy_template(name, to=".")
+      #puts "\n\n"
+      #puts "from: #{File.join(settings.template_root, name)}"
+      #puts "  to: #{File.join(@root, to)}"
+      #puts "\n\n"
+      cp_r File.join(settings.template_root, name), File.join(@root, to)
     end
 
    

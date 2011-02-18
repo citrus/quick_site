@@ -49,9 +49,12 @@ class MyAppTest < Test::Unit::TestCase
       @site = Site.new("Testing Site").save
     end
         
-    should "get the existing site" do
+    should "get found" do
       get '/sites/testing_site'
       assert last_response.ok?
+      
+      puts last_response.body
+      
       assert last_response.body.include?("Testing Site")
     end
     

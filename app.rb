@@ -26,5 +26,7 @@ set :public,           Proc.new{ Settings.public_path }
 set :views,            Proc.new{ Settings.view_path }
 set :reload_templates, true
 
+set :use_git,          true
+
 include Helpers
 include Actions
