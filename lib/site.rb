@@ -1,6 +1,8 @@
 require 'fileutils'
 require 'active_support/inflector'
 
+OUTPUT = STDOUT.dup        
+        
 class Site
   
   include FileUtils
@@ -49,12 +51,17 @@ class Site
   # Path to the site's view directory
   attr_reader :view_path
   
+  # Path to the site's log directory
+  attr_reader :log_path
+  
   # Path to the site's config file
   attr_reader :config_file
   
   # YML parsed site config hash
   attr_reader :config
     
+  ## The name of the newly saved page
+  #attr_reader :new_page
     
   # Creates a new Site instance
   #
@@ -91,13 +98,29 @@ class Site
     !Dir.exists?(@root)
   end
   
+  # A helper for new pages
+  #
+  def new_page?
+    @new_page
+  end
+  
+  # Add page to git repo
+  #
+  def update_git
+    Dir.chdir(@root) do
+      puts "git add views/#{@new_page}.haml public/#{@new_page}.html"
+      execute_quietly("git add views/#{@new_page}.haml public/#{@new_page}.html")
+    end
+  end
   
   # Creates template unless it exists
   #
   def haml(name)
+    @new_page = false
     name = safe_filename(name)
     return name.to_sym if File.exists?(File.join(@view_path, "#{name}.haml"))
     copy_haml("page", name)
+    @new_page = name
     name.to_sym
   end
   
@@ -148,6 +171,7 @@ class Site
       @root        = File.join(settings.site_root, @dir_name)
       @path        = "/sites/#{@dir_name}"
       @view_path   = @root + "/views"
+      @log_path    = @root + "/log"
       @public_path = @root + "/public"
       @config_file = @root + "/config.yml"
       # load config if it exists
@@ -160,20 +184,32 @@ class Site
     #
     def build
       mkdir_p @view_path
+      mkdir_p @log_path
       copy_template("public")
       copy_template("views")
       write_config
       initialize_git if settings.use_git
       self
     end 
+    
+    ## Creates a templated page and checks it into git
+    ##
+    #def build_page(name)
+    #  copy_haml("page", name)
+    #  #Dir.chdir(@root) do
+    #  #  execute_quietly("git add views/#{name}.haml")
+    #  #end
+    #  true
+    #end
 
 
     # Creates git repository in root directory and copies .gitignore template
     #
     def initialize_git
-      system("cd #{@root}; git init") unless Dir.exists?(@root + "/.git")
       copy_template ".gitignore"
-      system("git add .; git commit -a -m 'Initial Commit'")
+      Dir.chdir(@root) do
+        execute_quietly("git init; git add .; git commit -a -m 'Initial Commit'")
+      end
     end
     
     
@@ -187,12 +223,13 @@ class Site
     # Copies a template from the template root to the site's view path 
     #
     def copy_template(name, to=".")
-      #puts "\n\n"
-      #puts "from: #{File.join(settings.template_root, name)}"
-      #puts "  to: #{File.join(@root, to)}"
-      #puts "\n\n"
       cp_r File.join(settings.template_root, name), File.join(@root, to)
     end
+    
+    def execute_quietly(cmd)
+      $stdout.reopen("log/log.txt", "w")
+      system(cmd)
+      $stdout.reopen(OUTPUT)
+    end
 
-   
 end

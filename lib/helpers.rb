@@ -3,10 +3,10 @@ module Helpers
   # Finds a site and uses its paths
   #  
   def site(name)
-    @site = Site.find(name)
-    return redirect "/" unless @site
-    Settings.set_paths(@site)
-    @site
+    site = Site.find(name)
+    return redirect "/" unless site
+    Settings.set_paths(site)
+    site
   end
   
   # Defines helper methods once included into the scope
@@ -22,6 +22,8 @@ module Helpers
       def link_to(text, url, opts={})
         attributes = ""
         url = File.join("/sites/#{@site.name}", url) if @site
+        url.sub!(/\/$/, '')
+        opts[:class] = (opts[:class] || "").split(" ").push("active").join(" ") if url == request.path.sub(/\/$/, '')
         opts.each { |key, value| attributes << key.to_s << "=\"" << value << "\" "}
         "<a href=\"#{url}\" #{attributes}>#{text}</a>"
       end

@@ -13,6 +13,7 @@ require_relative "lib/settings"
 require_relative "lib/site"
 require_relative "lib/helpers"
 require_relative "lib/actions"
+require_relative "lib/templates"
 
 use Rack::Session::Cookie
 use Rack::Flash

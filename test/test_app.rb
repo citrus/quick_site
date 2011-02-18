@@ -52,9 +52,6 @@ class MyAppTest < Test::Unit::TestCase
     should "get found" do
       get '/sites/testing_site'
       assert last_response.ok?
-      
-      puts last_response.body
-      
       assert last_response.body.include?("Testing Site")
     end
     
@@ -72,6 +69,13 @@ class MyAppTest < Test::Unit::TestCase
       assert last_response.body.include?("Some New Nested Page")
       assert last_response.body.include?("some_new_nested_page.haml")
       assert File.exists?(File.join(@site.view_path, 'some_new_nested_page.haml'))
+    end
+    
+    
+    should "create cached page" do
+      get '/sites/testing_site/some_new_page'
+      assert last_response.ok?
+      assert File.exists?(File.join(@site.public_path, 'some_new_page.html'))
     end
     
   end

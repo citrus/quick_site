@@ -10,9 +10,15 @@ module Actions
     before do
       matches = request.path.match(SITE_REGEX) || []
       if 0 < matches.length
-        site(matches[1])
+        @site = site(matches[1])
       else
         Settings.reset_paths
+      end
+    end
+    
+    after do
+      if @site && @site.new_page?
+        @site.update_git
       end
     end
     
@@ -31,7 +37,8 @@ module Actions
     
     get SITE_REGEX do |name, page|
       @page = 0 < page.length ? page : "index"
-      haml @site.haml(@page)
+      template = @site.haml(@page)
+      haml template
     end
     
     

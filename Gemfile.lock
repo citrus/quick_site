@@ -13,6 +13,11 @@ GEM
     sinatra (1.1.2)
       rack (~> 1.1)
       tilt (~> 1.2)
+    sinatra-cache (0.3.6)
+      sinatra (>= 1.1.0)
+      sinatra-outputbuffer (>= 0.1.0)
+    sinatra-outputbuffer (0.1.0)
+      sinatra (>= 1.0.a)
     tilt (1.2.2)
 
 PLATFORMS
@@ -27,3 +32,4 @@ DEPENDENCIES
   rack-test
   shoulda
   sinatra
+  sinatra-cache
