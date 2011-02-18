@@ -25,6 +25,7 @@ module Helpers
         url.sub!(/\/$/, '')
         opts[:class] = (opts[:class] || "").split(" ").push("active").join(" ") if url == request.path.sub(/\/$/, '')
         opts.each { |key, value| attributes << key.to_s << "=\"" << value << "\" "}
+        url = '/' if url == ''
         "<a href=\"#{url}\" #{attributes}>#{text}</a>"
       end
       

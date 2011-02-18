@@ -25,4 +25,4 @@ end
 
 
 desc "Default Task"
-task :default => [ :test ] 
+task :default => [ :test ]

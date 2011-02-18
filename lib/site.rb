@@ -108,7 +108,6 @@ class Site
   #
   def update_git
     Dir.chdir(@root) do
-      puts "git add views/#{@new_page}.haml public/#{@new_page}.html"
       execute_quietly("git add views/#{@new_page}.haml public/#{@new_page}.html")
     end
   end

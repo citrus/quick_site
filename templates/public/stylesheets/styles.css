@@ -15,9 +15,10 @@ body {
 #nav a {
   display: block;
   float: left;
-  padding: 4px 14px;
+  padding: 3px 14px;
   margin-right: 7px;
   background-color: #fff;
+  border-top: 2px solid #fff;
   color: #333;
 }
 #nav a:hover {
