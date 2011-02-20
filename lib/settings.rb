@@ -8,6 +8,7 @@ module Settings
   def settings
     @settings ||= {}
   end
+  alias :all :settings
   
   # Returns the swappable public path
   #
@@ -51,14 +52,14 @@ module Settings
     send(name)
   end
 
-  # Retrieve a saved setting and throw and error if it doesn't exist.
+  # Retrieve a saved setting or return false if it doesn't exist.
   #
   #   Settings.foo #=> "bar"
   #   Settings.fuz #=> method missing error
   #
   def method_missing(method, *args, &block)
     val = settings[method] #instance_variable_get "@#{method.to_s}"
-    val.nil? ? super : val
+    val.nil? ? false : val
   end
   
   # Resets the 'hot-swappable' paths to their defaults

@@ -15,10 +15,17 @@ class TestDeployer < Test::Unit::TestCase
     assert_equal @deployer.site, @site
   end
   
-  should "run deployment" do
-    @deployer = Deployer.new(@site)  
-    @deployer.send(:compress)
-    
+  should "compress into tar file" do
+    assert @deployer.send(:compress)
+    assert File.exists?(File.join(@site.root, @deployer.zip))
   end
+  
+  should "upload file to remote" do
+    @deployer.send(:compress)
+    @deployer.send(:upload)
+    #assert File.exists?(File.join(@site.root, @deployer.zip))
+  end
+  
+  
 
 end  
