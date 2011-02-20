@@ -4,6 +4,7 @@ GEM
     activesupport (3.0.4)
     haml (3.0.25)
     i18n (0.5.0)
+    mustache (0.12.0)
     rack (1.2.1)
     rack-flash (0.1.1)
       rack
@@ -27,6 +28,7 @@ DEPENDENCIES
   activesupport
   haml
   i18n
+  mustache
   rack
   rack-flash
   rack-test

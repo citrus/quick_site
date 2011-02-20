@@ -2,12 +2,19 @@ module Settings
   
   extend self
   
+  
+  # A Hash to store values 
+  #
+  def settings
+    @settings ||= {}
+  end
+  
   # Returns the swappable public path
   #
   #   Settings.public_path
   #
   def public_path
-    @public_path ||= @root + "/public"
+    @public_path ||= root + "/public"
   end
   
   # Returns the swappable view path
@@ -15,24 +22,42 @@ module Settings
   #   Settings.view_path
   #
   def view_path
-    @view_path ||= @root + "/views"
+    @view_path ||= root + "/views"
   end
   
   # Create a setting and save its value
   #
   #   Settings.set :foo, "bar"
+  #   Settings.set :foo => "bar"
+  #   Settings.set :foo => "bar", :beer => "good"
   #
-  def set(name, value)
-    instance_variable_set "@#{name.to_s}", value
+  def set(setting, value=setting)
+    case setting.class.to_s
+      when 'Hash'
+        settings.merge!(value)
+      when 'String', 'Symbol'
+        settings[setting.to_sym] = value
+      else
+        raise ArgumentError, "setting must be a symbol, string or hash"
+    end
+  end
+  
+  
+  # Finds a setting and returns its value
+  #
+  #   Settings.get :foo  #=> "bar"
+  #
+  def get(name)
+    send(name)
   end
 
   # Retrieve a saved setting and throw and error if it doesn't exist.
   #
-  #   Settings.foo # "bar"
-  #   Settings.fuz # method missing error
+  #   Settings.foo #=> "bar"
+  #   Settings.fuz #=> method missing error
   #
   def method_missing(method, *args, &block)
-    val = instance_variable_get "@#{method.to_s}"
+    val = settings[method] #instance_variable_get "@#{method.to_s}"
     val.nil? ? super : val
   end
   

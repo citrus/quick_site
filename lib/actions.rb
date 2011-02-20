@@ -37,8 +37,20 @@ module Actions
     
     get SITE_REGEX do |name, page|
       @page = 0 < page.length ? page : "index"
-      template = @site.haml(@page)
-      haml template
+      if @page == '_deploy'
+        
+        @deployer = Deployer.new(@site)
+        
+        if @deployer.deploy!
+          flash[:notice] = 'Success! Your site has been deployed!'
+        else
+          flash[:error] = 'Your site could not be deployed...'
+        end
+        redirect '/' 
+      else
+        template = @site.haml(@page)
+        haml template
+      end
     end
     
     

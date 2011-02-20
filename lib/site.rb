@@ -14,8 +14,8 @@ class Site
     #   Site.all # ["test", "sample", ...]
     #
     def all
-      return [] unless Dir.exists?(settings.site_root)
-      Dir.entries(settings.site_root).reject{|i| i.match(/^\./) != nil }
+      return [] unless Dir.exists?(Settings.site_root)
+      Dir.entries(Settings.site_root).reject{|i| i.match(/^\./) != nil }
     end
     
     # Finds a site's root folder, then creates a new instance of Site and loads it's config. 
@@ -158,7 +158,7 @@ class Site
     # Converts the given name into a lowercase underscored filename
     #
     def safe_filename(name)
-      name.parameterize.gsub("-", "_")
+      name.downcase.gsub(/[^a-z0-9\_\-\/\.\s]/, '').gsub(/\s+/, '_').gsub(/\/$/, '')
     end
   
     # Sets instance variables
@@ -167,12 +167,12 @@ class Site
       # setup variables based on name
       @title       = @name.titleize
       @dir_name    = safe_filename(@name)
-      @root        = File.join(settings.site_root, @dir_name)
+      @root        = File.join(Settings.site_root, @dir_name)
       @path        = "/sites/#{@dir_name}"
       @view_path   = @root + "/views"
       @log_path    = @root + "/log"
       @public_path = @root + "/public"
-      @config_file = @root + "/config.yml"
+      @config_file = @root + "/config/application.yml"
       # load config if it exists
       load_config
       self
@@ -184,10 +184,11 @@ class Site
     def build
       mkdir_p @view_path
       mkdir_p @log_path
+      mkdir_p @root + "/config"
       copy_template("public")
       copy_template("views")
       write_config
-      initialize_git if settings.use_git
+      initialize_git if Settings.use_git
       self
     end 
     
@@ -212,6 +213,17 @@ class Site
     end
     
     
+    # Applies site variables to a mustache template and writes it to the site directory
+    #
+    def mustache_copy(template)
+      #puts template.inspect
+      temp = File.join(Settings.template_root, "#{template}.mustache")
+      dest = File.join(@root, template)
+      File.open(dest, 'w') { |file|
+        file.write(Mustache.render(File.read(temp), :name => dir_name))
+      }
+    end
+    
     # Copies a template from the template root to the site's view path 
     #
     def copy_haml(name, to=name)
@@ -222,9 +234,14 @@ class Site
     # Copies a template from the template root to the site's view path 
     #
     def copy_template(name, to=".")
-      cp_r File.join(settings.template_root, name), File.join(@root, to)
+      dest = File.expand_path(File.join(@root, File.dirname(to)))
+      mkdir_p(dest) unless Dir.exists?(dest)
+      cp_r File.join(Settings.template_root, name), File.join(@root, to)
     end
     
+    
+    # Redirects $stdout to a log file, executes a command, then returns $stdout to its previous state.
+    #
     def execute_quietly(cmd)
       $stdout.reopen("log/log.txt", "w")
       system(cmd)

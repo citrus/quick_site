@@ -9,8 +9,10 @@
 
 - if @sites
   %h2 Sites
-  %h4 Site Root: #{settings.site_root}
+  %h4 Site Root: #{Settings.site_root}
   
   %ul.sites
   - @sites.each do |site|
-    %li= link_to site, "/sites/#{site}"
+    %li
+      %h4= link_to site, "/sites/#{site}"
+      = link_to 'deploy!', "/sites/#{site}/_deploy"

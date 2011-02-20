@@ -39,7 +39,18 @@ module Sinatra
         if layout
           options = options.merge(:views => views, :layout => false, :eat_errors => eat_errors)
           catch(:layout_missing) { output = render(layout_engine, layout, options, locals) { output }}
-          File.open(File.join(Settings.public_path, "#{data}.html"), "w") {|file| file.write(output.gsub(/[\n\r]*/, '').gsub(/\s+/, ' ').gsub(/sites\/[a-z0-9\_\-]+\/?/, '')) }
+          
+          
+          # write to html
+          file = File.join(Settings.public_path, "#{data}.html")
+          path = File.expand_path(File.dirname(file))
+          FileUtils.mkdir_p path unless Dir.exists?(path)
+          File.open(file, "w") {|f| 
+            output.gsub!(/[\n\r]*/, '').gsub!(/\s+/, ' ') if Settings.compress_html
+            f.write(output.gsub(/sites\/[a-z0-9\_\-]+\/?/, ''))
+          }
+          
+          
         end
     
         output.extend(ContentTyped).content_type = content_type if content_type

@@ -15,6 +15,8 @@ module Helpers
   
     helpers do
     
+      #include ActionView::Helpers
+    
       # Provides simple link_to functionality
       #
       #   = link_to "Home", "/"
@@ -61,6 +63,9 @@ module Helpers
           %(<link href="/stylesheets/#{name}.css?#{Time.now.to_i}" media="screen" rel="stylesheet" type="text/css"/>)
         }.join("\n")
       end
+      
+      
+      alias :stylesheet_link_tag :stylesheet
       
     end
   

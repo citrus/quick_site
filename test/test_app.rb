@@ -8,8 +8,8 @@ class MyAppTest < Test::Unit::TestCase
   end
   
   def setup
-    set :site_root, settings.root + "/test/sites"
-    FileUtils.rm_r settings.site_root if Dir.exists?(settings.site_root)  
+    Settings.set :site_root, Settings.root + "/test/sites"
+    FileUtils.rm_r Settings.site_root if Dir.exists?(Settings.site_root)  
   end
 
   should "get homepage" do
@@ -17,7 +17,7 @@ class MyAppTest < Test::Unit::TestCase
     assert last_response.ok?    
     assert last_response.body.include?("Quick Site")
     assert last_response.body.include?("New Site")
-    assert last_response.body.include?("Site Root: #{settings.site_root}")
+    assert last_response.body.include?("Site Root: #{Settings.site_root}")
     assert last_response.body.include?("Sites")
   end
 
@@ -67,15 +67,28 @@ class MyAppTest < Test::Unit::TestCase
       get '/sites/testing_site/some/new/nested/page'
       assert last_response.ok?
       assert last_response.body.include?("Some New Nested Page")
-      assert last_response.body.include?("some_new_nested_page.haml")
-      assert File.exists?(File.join(@site.view_path, 'some_new_nested_page.haml'))
+      assert last_response.body.include?("some/new/nested/page.haml")
+      assert File.exists?(File.join(@site.view_path, 'some/new/nested/page.haml'))
     end
-    
     
     should "create cached page" do
       get '/sites/testing_site/some_new_page'
       assert last_response.ok?
       assert File.exists?(File.join(@site.public_path, 'some_new_page.html'))
+    end
+
+    should "create nested cached page" do
+      get '/sites/testing_site/some/new/page'
+      assert last_response.ok?
+      assert File.exists?(File.join(@site.public_path, 'some/new/page.html'))
+    end
+    
+    should "be deployable" do
+      get '/sites/testing_site/_deploy'
+      assert_equal 302, last_response.status
+      follow_redirect!
+      assert last_response.ok?    
+      assert_equal 'http://example.org/', last_request.url
     end
     
   end

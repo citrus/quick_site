@@ -5,6 +5,7 @@ gem 'rack-flash'
 gem 'sinatra'
 gem 'sinatra-cache'
 gem 'haml'
+gem 'mustache'
 gem 'activesupport'
 gem 'i18n'
 
