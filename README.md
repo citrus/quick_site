@@ -73,6 +73,12 @@ To Do
 * Switch to a more clever name?
 
 
+Notes
+-----
+
+Quick Site was built on a Mac with Ruby 1.9 in mind. 1.8.x compatibility has not been tested.
+
+
 License
 -------
 
