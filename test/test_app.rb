@@ -1,6 +1,6 @@
 require 'helper'
 
-class MyAppTest < Test::Unit::TestCase
+class TestApp < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app

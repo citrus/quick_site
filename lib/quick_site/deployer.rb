@@ -71,9 +71,6 @@ class Deployer
     def symlink
       current = File.join(@site.config['remote_root'], 'current')   
       release = File.join(@site.config['remote_root'], 'releases', @key)
-      puts current.inspect
-      puts release.inspect
-      puts remote_exists?(current)
       @site.ssh("rm -rf #{current}") if remote_exists?(current)
       @site.ssh("ln -s #{release} #{current}")
       remote_exists?(current)

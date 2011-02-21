@@ -144,6 +144,7 @@ class Site
       "host"         => Settings.host,
       "user"         => Settings.user,
       "port"         => Settings.port,
+      "password"     => Settings.password || "",
       "remote_root"  => File.join(Settings.remote_root, "#{@dir_name}.com")
     }
   end

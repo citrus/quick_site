@@ -10,12 +10,7 @@ require 'haml'
 require 'sinatra'
 require 'mustache'
 
-require_relative "lib/settings"
-require_relative "lib/site"
-require_relative "lib/deployer"
-require_relative "lib/helpers"
-require_relative "lib/actions"
-require_relative "lib/templates"
+require_relative "lib/quick_site"
 
 use Rack::Session::Cookie
 use Rack::Flash
@@ -23,17 +18,16 @@ use Rack::Flash
 
 # quicksite settings
 Settings.set :root, File.expand_path("../", __FILE__)
-
 Settings.set(
   :site_root      => Settings.root + "/sites",
-  :template_root  => Settings.root + "/templates",
-  :use_git        => true,
-  :compress_html  => true,
-  :user           => "user",
-  :host           => "127.0.0.1",
-  :port           => 22,
-  :remote_root    => "/home/citrus/domains"
+  :template_root  => Settings.root + "/templates"
 )
+
+# load environment specific config if it exists, otherwise default to standard
+unless Settings.load("config/#{settings.environment}.yml")
+  Settings.load("config/development.yml")
+end
+
 
 # sinatra settings
 set :root,             Settings.root

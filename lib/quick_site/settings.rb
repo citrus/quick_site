@@ -4,11 +4,17 @@ module Settings
   
   
   # A Hash to store values 
-  #
   def settings
     @settings ||= {}
   end
   alias :all :settings
+  
+  
+  # Loads the specifed file into the settings hash
+  def load(file)
+    return false unless File.exists?(file)
+    @settings = settings.merge(YAML::load_file(file)).symbolize_keys
+  end
   
   # Returns the swappable public path
   #
@@ -59,7 +65,7 @@ module Settings
   #
   def method_missing(method, *args, &block)
     val = settings[method] #instance_variable_get "@#{method.to_s}"
-    val.nil? ? false : val
+    val.nil? ? nil : val
   end
   
   # Resets the 'hot-swappable' paths to their defaults

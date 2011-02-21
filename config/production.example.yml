@@ -1,0 +1,8 @@
+--- 
+host: 127.0.0.1
+user: demo
+port: 22 # optional
+password: password # optional
+use_git: true
+compress_html: true
+remote_root: /home/demo/domains

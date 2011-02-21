@@ -1,7 +1,9 @@
-require 'test/unit'
-require 'shoulda'
+require 'helper'
 
-require_relative "../lib/settings.rb"
+#require 'test/unit'
+#require 'shoulda'
+
+#require_relative "../lib/settings.rb"
 
 
 class ClassWithIncludeSettings  
