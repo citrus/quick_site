@@ -1,3 +1,5 @@
+require 'net/ssh'
+require 'net/scp'
 require 'fileutils'
 require 'active_support/inflector'
 
@@ -56,15 +58,9 @@ class Site
   
   # Path to the site's config file
   attr_reader :config_file
-  
-  # YML parsed site config hash
-  attr_reader :config
-    
-  ## The name of the newly saved page
-  #attr_reader :new_page
-    
+
+
   # Creates a new Site instance
-  #
   def initialize(name)
     @name = name
     setup!
@@ -73,7 +69,6 @@ class Site
   
   
   # Save a new Site
-  #
   def save
     if valid?
       build
@@ -84,14 +79,12 @@ class Site
   
   
   # Determines if site is new
-  #
   def new?
     !Dir.exists?(@root)
   end
   
   
   # Validates a site instance
-  #
   def valid?
     0 < @name.length &&
     0 < @dir_name.length &&
@@ -99,13 +92,11 @@ class Site
   end
   
   # A helper for new pages
-  #
   def new_page?
     @new_page
   end
   
   # Add page to git repo
-  #
   def update_git
     Dir.chdir(@root) do
       execute_quietly("git add views/#{@new_page}.haml public/#{@new_page}.html")
@@ -113,7 +104,6 @@ class Site
   end
   
   # Creates template unless it exists
-  #
   def haml(name)
     @new_page = false
     name = safe_filename(name)
@@ -125,44 +115,87 @@ class Site
   
     
   # Writes site config to YML file.
-  #
-  def write_config
+  def write_config  
     File.open(@config_file, 'w') do |out|
-      YAML.dump({
-        "name"   => @name,
-        "root"   => @root,
-        "domain" => "your-domain.com",
-        "email"  => "your-email@your-domain.com"
-      }, out )
+      YAML.dump(defaults.merge(config), out)
     end
     load_config
   end
   
   
   # Loads the config.yml into @config 
-  #
   def load_config
     return false unless File.exists?(@config_file)
     @config = YAML::load_file(@config_file)
   end
   
+  # Returns or creates the config object
+  def config
+    @config ||= {}
+  end
+  
+  # Default config values
+  def defaults
+    {
+      "name"         => @name,
+      "root"         => @root,
+      "domain"       => "your-domain.com",
+      "email"        => "your-email@your-domain.com",
+      "host"         => Settings.host,
+      "user"         => Settings.user,
+      "port"         => Settings.port,
+      "remote_root"  => File.join(Settings.remote_root, "#{@dir_name}.com")
+    }
+  end
+  
   # Compares two sites based on their root folders
-  #
   def ==(other)
     @root == other.root
   end
   
+  # Returns true if site has necessary config to use ssh
+  def remote_enabled?
+    config.include?('port') && config.include?('user') && config.include?('host') && config.include?('remote_root')
+  end
+  
+  # Returns an object with params for SSH or SCP
+  def get_remote_options
+    opts = { :port => config['port'] }
+    opts[:password] = config['password'] if config.include?('password')
+    opts
+  end
+  
+  # Executes commands in a block with the session as the reciever
+  def session(&block)
+    return false unless block_given?
+    session = Net::SSH.start(config['host'], config['user'], get_remote_options)
+    result = yield(session)
+    session.close
+    result.to_s.strip
+  end
+  
+  # Runs a remote command using the site's config
+  def ssh(command)
+    session{|ssh| ssh.exec!(command) }
+  end
+  
+  # Copies a local file to the remote server
+  def scp(src, dest)
+    res = session{|ssh|
+      ssh.scp.upload!(src, dest)
+      ssh.exec!("if [ -e #{dest} ]; then echo 'true'; fi")
+    }
+    res == 'true'
+  end
   
   private
   
     # Converts the given name into a lowercase underscored filename
-    #
     def safe_filename(name)
       name.downcase.gsub(/[^a-z0-9\_\-\/\.\s]/, '').gsub(/\s+/, '_').gsub(/\/$/, '')
     end
   
     # Sets instance variables
-    #
     def setup!
       # setup variables based on name
       @title       = @name.titleize
@@ -180,7 +213,6 @@ class Site
     
     
     # Build site structure
-    #
     def build
       mkdir_p @view_path
       mkdir_p @log_path
@@ -192,19 +224,8 @@ class Site
       self
     end 
     
-    ## Creates a templated page and checks it into git
-    ##
-    #def build_page(name)
-    #  copy_haml("page", name)
-    #  #Dir.chdir(@root) do
-    #  #  execute_quietly("git add views/#{name}.haml")
-    #  #end
-    #  true
-    #end
-
 
     # Creates git repository in root directory and copies .gitignore template
-    #
     def initialize_git
       copy_template ".gitignore"
       Dir.chdir(@root) do
@@ -214,9 +235,7 @@ class Site
     
     
     # Applies site variables to a mustache template and writes it to the site directory
-    #
     def mustache_copy(template)
-      #puts template.inspect
       temp = File.join(Settings.template_root, "#{template}.mustache")
       dest = File.join(@root, template)
       File.open(dest, 'w') { |file|
@@ -225,14 +244,12 @@ class Site
     end
     
     # Copies a template from the template root to the site's view path 
-    #
     def copy_haml(name, to=name)
       copy_template "#{name}.haml", "views/#{to}.haml"
     end
     
     
     # Copies a template from the template root to the site's view path 
-    #
     def copy_template(name, to=".")
       dest = File.expand_path(File.join(@root, File.dirname(to)))
       mkdir_p(dest) unless Dir.exists?(dest)
@@ -241,7 +258,6 @@ class Site
     
     
     # Redirects $stdout to a log file, executes a command, then returns $stdout to its previous state.
-    #
     def execute_quietly(cmd)
       $stdout.reopen("log/log.txt", "w")
       system(cmd)

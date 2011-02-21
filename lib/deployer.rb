@@ -9,59 +9,76 @@ class Deployer
   attr_reader :key
   
   # Returns the name of the tar file
-  attr_reader :zip
+  attr_reader :tar
   
   # Creats a new instance of Deployer with the given site
-  #
   def initialize(site)
     @site = site
     @key  = Time.now.strftime('%Y%m%d%H%M%S')
-    @zip  = "#{@key}.tar.gz"
-    puts zip
+    @tar  = "#{@key}.tar.gz"
     super
   end
   
+  
   # Runs the deploy command chain
-  #
   def deploy!
     @compressed = compress
+    return false unless @compressed
     @uploaded   = upload
+    return false unless @uploaded
     @unzipped   = unzip
+    return false unless @unzipped
+    @symlinked  = symlink
     success?
-    #false
   end
+  
+  # Checks is a file exists on the server 
+  def remote_exists?(dir)
+    @site.ssh("if [ -e #{dir} ]; then echo 'true'; else echo 'false'; fi").strip == 'true'
+  end
+  
   
   private
   
+    # Writes site's public folder to an archive
     def compress
-      puts "compressing"
       chdir @site.root do
-        system "tar czf #{@zip} ./public"
+        system "tar czf #{@tar} ./public"
       end
-      File.exists?(File.join(@site.root, @zip))
+      File.exists?(File.join(@site.root, @tar))
     end
     
+    
+    # Uploads archive to the server
     def upload
-      puts "uploading"
-      return false unless Settings.host && Settings.user && Settings.remote_root
-      port = Settings.port || 22
-      chdir @site.root do
-        cmd = "scp -P#{port} #{@zip} #{Settings.user}@#{Settings.host}:#{Settings.remote_root}"
-        puts cmd
-        system cmd
-        
-      end
+      return false unless @site.remote_enabled?
+      release = File.join(@site.config['remote_root'], "releases", @key)
+      tar = File.join(release, @tar)
+      @site.ssh("mkdir -p #{release}") unless remote_exists?(release)
+      @site.scp(File.join(@site.root, @tar), tar)
     end
     
+    
+    # Untars archive on the server
     def unzip
-      puts "unzipping"
-      
+      return false unless @site.remote_enabled?
+      releases = File.join(@site.config['remote_root'], "releases")
+      @site.ssh("cd #{releases}/#{@key}; tar xzf #{@tar}; rm #{@tar}")
+      remote_exists?(File.join(releases, @key, "public"))
     end
     
-    def success?
-      b = @compressed && @uploaded && @unzipped
-      puts "success? #{b}"
-      b
+    # Symlinks the current folder to the last release
+    def symlink
+      current = File.join(@site.config['remote_root'], "current")   
+      release = File.join(@site.config['remote_root'], "releases", @key)
+      @site.ssh("rm #{current}") if remote_exists?(current)
+      @site.ssh("ln -s #{release} #{current}")
+      remote_exists?(current)
     end
-  
+    
+    # Returns true if release has been compressed, uploaded and unzipped
+    def success?
+      @compressed && @uploaded && @unzipped && @symlinked
+    end
+    
 end
