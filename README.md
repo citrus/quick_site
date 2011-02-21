@@ -26,7 +26,7 @@ Open [http://localhost:4567](http://localhost:4567) in your favorite browser and
 
 
 
-**Currently in progress:** Once you're happy with your site, visit http://localhost:4567/**sites/your_site/_deploy** to upload your changes to your server. 
+**Currently in progress:** Once you're happy with your site, visit http://localhost:4567/sites/your_site/**_deploy** to upload your changes to your server. 
 
 
 
