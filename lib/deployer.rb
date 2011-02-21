@@ -52,9 +52,9 @@ class Deployer
     # Uploads archive to the server
     def upload
       return false unless @site.remote_enabled?
-      release = File.join(@site.config['remote_root'], "releases", @key)
+      release = File.join(@site.config['remote_root'], 'releases', @key)
       tar = File.join(release, @tar)
-      @site.ssh("mkdir -p #{release}") unless remote_exists?(release)
+      @site.ssh("mkdir -p #{release}/log") unless remote_exists?(release)
       @site.scp(File.join(@site.root, @tar), tar)
     end
     
@@ -62,16 +62,19 @@ class Deployer
     # Untars archive on the server
     def unzip
       return false unless @site.remote_enabled?
-      releases = File.join(@site.config['remote_root'], "releases")
+      releases = File.join(@site.config['remote_root'], 'releases')
       @site.ssh("cd #{releases}/#{@key}; tar xzf #{@tar}; rm #{@tar}")
-      remote_exists?(File.join(releases, @key, "public"))
+      remote_exists?(File.join(releases, @key, 'public'))
     end
     
     # Symlinks the current folder to the last release
     def symlink
-      current = File.join(@site.config['remote_root'], "current")   
-      release = File.join(@site.config['remote_root'], "releases", @key)
-      @site.ssh("rm #{current}") if remote_exists?(current)
+      current = File.join(@site.config['remote_root'], 'current')   
+      release = File.join(@site.config['remote_root'], 'releases', @key)
+      puts current.inspect
+      puts release.inspect
+      puts remote_exists?(current)
+      @site.ssh("rm -rf #{current}") if remote_exists?(current)
       @site.ssh("ln -s #{release} #{current}")
       remote_exists?(current)
     end
