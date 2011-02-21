@@ -6,13 +6,13 @@ class TestDeployer < Test::Unit::TestCase
 
   def setup
     Settings.set :site_root, Settings.root + "/test/sites"
+    Settings.set :use_git, true
+    
     FileUtils.rm_r Settings.site_root if Dir.exists?(Settings.site_root)  
     @site = Site.new("Testing Site").save
-    @deployer = Deployer.new(@site)
-    @release_path = File.join(@site.config['remote_root'], "releases", @deployer.key)
     
-    # deletes remote site
-    @site.ssh("rm -r #{@site.config['remote_root']}") if @deployer.remote_exists?(@site.config['remote_root'])
+    @deployer = Deployer.new(@site)
+    @release_path = File.join(@site.config[:remote_root], "releases", @deployer.key)
   end
   
   should "create a new deployer" do
@@ -47,12 +47,18 @@ class TestDeployer < Test::Unit::TestCase
     assert @deployer.send(:upload)
     assert @deployer.send(:unzip)
     assert @deployer.send(:symlink)
-    assert @deployer.remote_exists?(File.join(@site.config['remote_root'], 'current'))
+    assert @deployer.remote_exists?(File.join(@site.config[:remote_root], 'current'))
   end
   
-  should "run entire deploy" do
+  should "run entire ssh deploy" do
+    Settings.set :use_git, false
     assert @deployer.deploy!
-    assert @deployer.remote_exists?(File.join(@site.config['remote_root'], 'current'))
+    assert @deployer.remote_exists?(File.join(@site.config[:remote_root], 'current'))
+  end
+  
+  should "run entire git deploy" do
+    assert @deployer.deploy!
+    assert @deployer.remote_exists?(File.join(@site.config[:remote_root], 'current'))
   end
   
 end

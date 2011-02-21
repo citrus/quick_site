@@ -12,6 +12,8 @@ body {
 }
 
 
+
+
 #nav {
   height: 27px;
 }
@@ -27,6 +29,19 @@ body {
   color: #d80000;
 }
 
+
+ul.sites {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+ul.sites li {
+  display: block;
+  margin: 0 0 10px 0;
+}
+ul.sites li h3 {
+  margin: 0;
+}
 
 #footer {
   font-size: 12px;

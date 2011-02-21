@@ -10,7 +10,6 @@ require 'rack-flash'
 
 require 'haml'
 require 'sinatra'
-require 'mustache'
 
 require "quick_site"
 

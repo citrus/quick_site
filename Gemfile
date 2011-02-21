@@ -7,7 +7,6 @@ gem 'sinatra-cache'
 gem 'haml'
 gem 'net-ssh'
 gem 'net-scp'
-gem 'mustache'
 gem 'activesupport'
 gem 'i18n'
 

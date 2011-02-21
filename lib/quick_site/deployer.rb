@@ -22,12 +22,21 @@ class Deployer
   
   # Runs the deploy command chain
   def deploy!
-    @compressed = compress
-    return false unless @compressed
-    @uploaded   = upload
-    return false unless @uploaded
-    @unzipped   = unzip
-    return false unless @unzipped
+    if Settings.use_git
+      #@commit_and_push  
+      
+      #ssh("cd @site.config[:remote_root]; git pull origin master")
+      
+      return true
+    else
+      # deploy via tar, ssh && scp
+      @compressed = compress
+      return false unless @compressed
+      @uploaded   = upload
+      return false unless @uploaded
+      @unzipped   = unzip
+      return false unless @unzipped
+    end
     @symlinked  = symlink
     success?
   end
@@ -52,7 +61,7 @@ class Deployer
     # Uploads archive to the server
     def upload
       return false unless @site.remote_enabled?
-      release = File.join(@site.config['remote_root'], 'releases', @key)
+      release = File.join(@site.config[:remote_root], 'releases', @key)
       tar = File.join(release, @tar)
       @site.ssh("mkdir -p #{release}/log") unless remote_exists?(release)
       @site.scp(File.join(@site.root, @tar), tar)
@@ -62,15 +71,15 @@ class Deployer
     # Untars archive on the server
     def unzip
       return false unless @site.remote_enabled?
-      releases = File.join(@site.config['remote_root'], 'releases')
+      releases = File.join(@site.config[:remote_root], 'releases')
       @site.ssh("cd #{releases}/#{@key}; tar xzf #{@tar}; rm #{@tar}")
       remote_exists?(File.join(releases, @key, 'public'))
     end
     
     # Symlinks the current folder to the last release
     def symlink
-      current = File.join(@site.config['remote_root'], 'current')   
-      release = File.join(@site.config['remote_root'], 'releases', @key)
+      current = File.join(@site.config[:remote_root], 'current')   
+      release = File.join(@site.config[:remote_root], 'releases', @key)
       @site.ssh("rm -rf #{current}") if remote_exists?(current)
       @site.ssh("ln -s #{release} #{current}")
       remote_exists?(current)

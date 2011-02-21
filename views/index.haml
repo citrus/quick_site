@@ -12,7 +12,9 @@
   %h4 Site Root: #{Settings.site_root}
   
   %ul.sites
-  - @sites.each do |site|
-    %li
-      %h4= link_to site, "/sites/#{site}"
-      = link_to 'deploy!', "/sites/#{site}/_deploy"
+    - @sites.each do |site|
+      %li
+        %h3= link_to site, "/sites/#{site}"
+        = link_to 'edit', "/sites/#{site}"
+        \/
+        = link_to 'deploy!', "/sites/#{site}/_deploy", :class => 'small'

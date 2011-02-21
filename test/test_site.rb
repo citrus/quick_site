@@ -1,4 +1,4 @@
-require 'helper'
+require "helper"
 
 class TestSite < Test::Unit::TestCase
 
@@ -94,22 +94,39 @@ class TestSite < Test::Unit::TestCase
       assert_equal @existing_site, @site
     end
     
-    should "not overwrite existing site" do
+    should "not be overwritten" do
       @site = Site.new("Testing Site")
       assert !@site.valid?
       assert !@site.save
     end
     
     should "create a new page" do
-      view = @existing_site.haml('some_page')
+      view = @existing_site.haml("some_page")
       assert view.is_a?(Symbol)
       assert File.exists?(@existing_site.root + "/views/some_page.haml")
     end
     
     should "create a new nested page" do
-      view = @existing_site.haml('some/nested/page')
+      view = @existing_site.haml("some/nested/page")
       assert view.is_a?(Symbol)
       assert File.exists?(@existing_site.root + "/views/some/nested/page.haml")
+    end
+    
+    should "check new page into git" do
+      Settings.set :use_git, true
+      view = @existing_site.haml("git_page")
+      files = `cd #{@existing_site.root}; git ls-files`
+      assert files.include?("views/git_page.haml") 
+    end
+    
+    should "be remote ssh enabled" do
+      Settings.set :use_git, false
+      assert @existing_site.remote_enabled?
+    end
+    
+    should "be remote git enabled" do
+      Settings.set :use_git, true
+      assert @existing_site.remote_enabled?
     end
     
   end

@@ -17,9 +17,9 @@ module Actions
     end
     
     after do
-      if @site && @site.new_page?
-        @site.update_git
-      end
+      if Settings.use_git && @site
+        @site.add_to_git("views/#{@page}.haml public/#{@page}.html")
+      end  
     end
     
     
