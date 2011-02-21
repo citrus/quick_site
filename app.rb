@@ -29,9 +29,9 @@ Settings.set(
   :template_root  => Settings.root + "/templates",
   :use_git        => true,
   :compress_html  => true,
-  :user           => "citrus",
-  :host           => "68.6.95.91",
-  :port           => 2727,
+  :user           => "user",
+  :host           => "127.0.0.1",
+  :port           => 22,
   :remote_root    => "/home/citrus/domains"
 )
 
