@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$:.unshift File.expand_path("../lib", __FILE__)
+
 require 'rubygems'
 require 'bundler/setup'
 
@@ -10,7 +12,7 @@ require 'haml'
 require 'sinatra'
 require 'mustache'
 
-require_relative "lib/quick_site"
+require "quick_site"
 
 use Rack::Session::Cookie
 use Rack::Flash
