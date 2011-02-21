@@ -11,25 +11,32 @@ To use quick site:
     cd quick_site
     bundle install
     
-Now boot with your method of choice:
+Edit `config/development.yml` to your liking.
     
-    ruby app.rb
+Boot with your server of choice:
+    
     thin start -p 4567
+    # or
     unicorn -p 4567
+    # or just
+    ruby app.rb
     
 
-Open [http://localhost:4567](http://localhost:4567) in your favorite browser and enter the name of your new site. After it's created, navigate to http://localhost:4567/sites/your_site/**your-new-page** to automatically create additional pages.
+Open [http://localhost:4567](http://localhost:4567) in your favorite browser and enter the name of your new site. After it's created, navigate to http://localhost:4567/sites/your_site/**your/new/page** to automatically create additional pages. Edit your pages to your liking using haml. <3
 
 
 
-** TO DO **
-Once you're happy with your site, visit http://localhost:4567/**deploy/site_name** to upload your changes to your server. 
+
+** ---- Currently in progress! ---- **
+Once you're happy with your site, visit http://localhost:4567/sites/your_site/_deploy** to upload your changes to your server. 
 
 
 
 If you'd like to restart the app on each request: (for development)
     
     shotgun -p 4567 $PWD/app.rb
+    
+For some reason the public folder can't be swapped when using shotgun... 
 
 
 Documentation
@@ -58,10 +65,9 @@ Shouda tests can be run with:
 To Do
 -----
 
-* Write deploy code..
+* Refactor deploy code..
 * Improve styles and views
-* Nested pages don't get nested (/this/is/a/page becomes this_is_a_page.haml)
-* Add more fields to new site form
+* Add more fields to new site form (email?/server config?)
 * Add image_tag helper
 * Add Less/SCSS support
 * Switch to a more clever name?
