@@ -1,6 +1,6 @@
 module Actions
 
-  SITE_REGEX = Regexp.new("/sites/([a-z0-9\_]+)/?(.*)")
+  SITE_REGEX = Regexp.new("/sites/([a-z0-9\_]+)/?([^.]*)$")
 
   def self.included(mod)
         

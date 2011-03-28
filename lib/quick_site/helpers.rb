@@ -37,7 +37,7 @@ module Helpers
       #
       def image_tag(src, opts={})
         attributes = ""
-        src = File.join("/sites/#{@site.name}", src) if @site
+        src = src.sub('/sites', '').sub(/^\/?/, '/')
         opts.each { |key, value| attributes << key.to_s << "=\"" << value << "\" "}
         "<img src=\"#{src}\" #{attributes}/>"
       end
